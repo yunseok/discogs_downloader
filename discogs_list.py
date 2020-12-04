@@ -14,6 +14,7 @@ driver = webdriver.Chrome(config["General"]["chromedriver_path"])
 
 albums_list = []
 albums_links = []
+albums_unavailaible = []
 
 def fuck_cookies():
     print("Accepting cookies...")
@@ -28,13 +29,14 @@ def clean_list(w_list):
         if is_empty(string):
             w_list.remove(string)
 
-# def check_album_title(info, album_str):
-#     # Some EPs on Discogs are listed with or without at the end
-#     # Some EPs on Deezer are listed with or without "EP" at the end
-#     # This is used to make the search more "clear"
-#     # e.g. (Laurent Garnier - Club Traxx EP)
-#     if "EP" in album_str:
-#         return album_str[:-2]
+def check_album_title(info, album_str):
+    # Some EPs on Discogs are listed with or without at the end
+    # Some EPs on Deezer are listed with or without "EP" at the end
+    # This is used to make the search more "clear"
+    # It's safer to just search for the album without the "EP"
+    # e.g. (Laurent Garnier - Club Traxx EP)
+    if "EP" in album_str:
+        return album_str[:-2]
 
 # def if_various(info, album_str):
 #     # If Various Artists album, check only album title and tracks inside
@@ -65,20 +67,21 @@ def get_album_artist(album):
 
 def file_exists(file):
     if os.path.isfile(file):
-        print(file + " exists")
+        print(file + " exists.")
         return True
     else:
         print(file + " does not exist.")
         return False
 
 def is_correct_album(info, album_str):
-    if info.title == get_album_title(album_str):
-        print("Album title seems to match!")
+    if info.title == get_album_title(album_str) OR 
+       info.title == check_album_title(info.title, get_album_title(album_str)):
         if info.artist.name == get_album_artist(album_str):
             albums_links.append(info.link)
         else:
             print("Artist doesn't match... Skipping!")
     else:
+        # Should improve 
         print("Album title doesn't match... Skipping!")
 
 def search_deezer(album_str):
@@ -87,6 +90,7 @@ def search_deezer(album_str):
     for info in album:
         is_correct_album(info, album_str)
 
+# Clean this! Actually clean the whole project once you're done.
 getAlbumInfo("https://www.discogs.com/fr/lists/test-list/631065")
 for album in albums_list:
     print("Searching: " + album)
@@ -94,3 +98,6 @@ for album in albums_list:
 with open('downloadLinks.txt', 'w') as f:
     for link in albums_links:
         f.write("%s\n" % link)
+with open('downloadUnavailaible.txt', 'w') as f:
+    for album in albums_unavailaible:
+        f.write("%s\n" % album)
