@@ -1,0 +1,9 @@
+[General]
+chromedriver_path = PATH_OF_chromedriver.exe
+
+[Auth]
+access_token = AUTH_TOKEN_HERE
+cookie_btn_xpath = //*[@id="onetrust-accept-btn-handler"]
+
+[Downloads]
+downloadLinks_path = PATH_OF_downloadLinks.txt

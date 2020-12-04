@@ -1,4 +1,8 @@
 *.exe
 *.log
+*.txt
 test.py
 token
+config.ini
+anothertestfilecuztheotheroneismessy.py
+downloadLinks.txt
